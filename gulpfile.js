@@ -18,7 +18,7 @@ gulp.task('mocha:test', () => {
 });
 
 gulp.task('watch', () => {
-  gulp.watch(files, ['lint: test', 'mocha: test']);
+  gulp.watch(files, ['lint:test', 'mocha:test']);
 });
 
 gulp.task('default', ['watch', 'lint:test', 'mocha:test'], () => {
