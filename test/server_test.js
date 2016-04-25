@@ -5,13 +5,22 @@ chai.use(chaiHttp);
 const request = chai.request;
 const mongoose = require('mongoose');
 
-const port = process.env.PORT = 4444;
+const port = process.env.PORT = 3000;
 process.env.MONGODB_URI = 'mongodb://localhost/planet_test_db';
 
-require(__dirname + '/../server.js');
+const server = require(__dirname + '/../server.js');
 var Planet = require(__dirname + '/../model/model.js');
 
 // POST
+describe('Deal with the server', () => {
+
+  after((done) => {
+    server.stop(() => {
+      console.log('stoped the server');
+    });
+    done();
+  });
+
 describe('POST method', () => {
   after((done) => {
     mongoose.connection.db.dropDatabase(() => {
@@ -21,12 +30,11 @@ describe('POST method', () => {
 
   it('should create a new Planet', (done) => {
     request('localhost:' + port)
-    .post('/planet')
+    .post('/planets')
     .send({ name: 'Pluto', color: 'black', size: 'small',
     moonsNumber: 1 })
     .end((err, res) => {
       expect(err).to.eql(null);
-      // expect(res.status).to.eql(200);
       expect(res.body.name).to.eql('Pluto');
       done();
     });
@@ -36,11 +44,10 @@ describe('POST method', () => {
 describe('GET method', () => {
   it('should get planet data', (done) => {
     request('localhost:' + port)
-    .get('/planet')
+    .get('/planets')
     .end((err, res) => {
       expect(err).to.eql(null);
-      // expect(Array.isArray(res.body.data)).to.eql(true);
-      // expect(res.status).to.eql(200);
+      expect(res.body).to.eql([]);
       done();
     });
   });
@@ -71,22 +78,23 @@ describe('PUT and DELETE', () => {
 
   it('PUT, should change a planet', (done) => {
     request('localhost:' + port)
-    .put('/planet/' + this.planet.name)
+    .put('/planets/' + this.planet.name)
     .send({ name: 'Pluto', color: 'gold', size: 'large', moonsNumber: 88 })
     .end((err, res) => {
       expect(err).to.eql(null);
-      expect(res.body.msg).to.eql('Updated a Planet');
+      expect(res.body.color).to.eql('gold');
       done();
     });
   });
 
   it('DELETE, should DESTRY a planet!', (done) => {
     request('localhost:' + port)
-    .delete('/planet/' + this.planet.name)
+    .delete('/planets/' + this.planet.name)
     .end((err, res) => {
       expect(err).to.eql(null);
-      expect(res.body.msg).to.eql('OMG! We destroyed a planet!');
+      expect(res.body.message).to.eql('OMG! We destroyed a planet!');
       done();
     });
   });
+});
 });
