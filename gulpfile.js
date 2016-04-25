@@ -21,4 +21,6 @@ gulp.task('watch', () => {
   gulp.watch(files, ['lint: test', 'mocha: test']);
 });
 
-gulp.task('default', ['watch', 'lint: test', 'mocha: test']);
+gulp.task('default', ['watch', 'lint:test', 'mocha:test'], () => {
+  process.exit(0);
+});

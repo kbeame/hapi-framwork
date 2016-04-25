@@ -16,7 +16,8 @@ describe('Deal with the server', () => {
 
   after((done) => {
     server.stop(() => {
-      console.log('stoped the server');
+      console.log('stopped the server');
+      // process.exit()
     });
     done();
   });
